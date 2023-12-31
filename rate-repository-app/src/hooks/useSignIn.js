@@ -1,17 +1,26 @@
 import { useMutation } from '@apollo/client'
 import { AUTHENTICATE } from '../graphql/mutations'
+import AuthStorage from '../utilities/authStorage'
+const authStorage = new AuthStorage('accessToken')
 
 const useSignIn = () => {
   const [mutate, result] = useMutation(AUTHENTICATE)
 
   const signIn = async ({ username, password }) => {
     const variables = { credentials: { username, password } }
-
-    // maybe rewrite as a try catch
     const payload = await mutate({ variables })
     const { data } = payload
+
     if (data) {
-      console.log('set in local storage')
+      const {
+        authenticate: { accessToken },
+      } = data
+      try {
+        authStorage.setAccessToken(accessToken)
+        console.info('User successfully logged in')
+      } catch (storageError) {
+        throw new Error(`Error in storing accessToken: ${storageError}`)
+      }
     }
 
     return payload

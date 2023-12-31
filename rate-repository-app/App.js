@@ -8,7 +8,7 @@ import Constants from 'expo-constants'
 const apolloClient = createApolloClient()
 
 const App = () => {
-  console.log(`CONSTANTS = `, Constants.expoConfig.extra)
+  // console.log(`CONSTANTS = `, Constants.expoConfig.extra)
   LogBox.ignoreLogs(['Remote debugger'])
 
   return (

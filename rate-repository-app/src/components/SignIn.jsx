@@ -83,9 +83,9 @@ const SignIn = () => {
     const { username, password } = values
     try {
       const { data } = await signIn({ username, password })
-      console.log(`Access Token: ${data.accessToken}`)
-    } catch (e) {
-      console.log(e)
+      console.log(`response = `, data)
+    } catch (loginError) {
+      throw new Error(`Error logging-in: ${loginError}`)
     }
   }
 
