@@ -1,10 +1,14 @@
 import { View, StyleSheet, Pressable } from 'react-native'
+import { useNavigate } from 'react-router-native'
+import { useState } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import Text from './Text'
 import FormikTextInput from './FormikTextInput'
 import theme from '../styles/theme'
 import useSignIn from '../hooks/useSignIn'
+import { Error } from './Miscellaneous'
+
 /**
  *
  * @returns sign-in form with two text fields
@@ -12,7 +16,6 @@ import useSignIn from '../hooks/useSignIn'
  *  - password - use secureEntryText to obscure password input
  *  - button for submitting the form - log the values onSubmit for now
  */
-
 const styles = StyleSheet.create({
   container: {
     padding: 5,
@@ -47,7 +50,7 @@ const initialValues = {
   password: '',
 }
 
-const SignInForm = ({ onSubmit }) => {
+const SignInForm = ({ onSubmit, error }) => {
   return (
     <View style={styles.container}>
       <FormikTextInput name="username" placeholder="Username" style={styles.input} />
@@ -60,6 +63,7 @@ const SignInForm = ({ onSubmit }) => {
       <Pressable onPress={onSubmit} style={styles.submitBtn}>
         <Text style={styles.submitBtnText}>Sign in</Text>
       </Pressable>
+      {error && <Error error={error} />}
     </View>
   )
 }
@@ -75,17 +79,25 @@ const validationSchema = yup.object().shape({
     .required('Password is required'),
 })
 
-const SignIn = () => {
+const SignIn = ({}) => {
   // destructure signIn from the tuple
   const [signIn] = useSignIn()
+  const [error, setError] = useState('')
+  const navigate = useNavigate()
 
   const onSubmit = async (values) => {
     const { username, password } = values
     try {
       const { data } = await signIn({ username, password })
-      console.log(`response = `, data)
+      const {
+        authenticate: { accessToken },
+      } = data
+      // console.log(`response = `, data)
+      accessToken ? navigate('/') : null
     } catch (loginError) {
-      throw new Error(`Error logging-in: ${loginError}`)
+      // access the message from the object
+      setError(loginError.message)
+      console.error(`Error logging-in: ${loginError}`)
     }
   }
 
@@ -94,7 +106,7 @@ const SignIn = () => {
   // is not called
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({ handleSubmit }) => <SignInForm onSubmit={handleSubmit} />}
+      {({ handleSubmit }) => <SignInForm onSubmit={handleSubmit} error={error} />}
     </Formik>
   )
 }

@@ -1,10 +1,12 @@
-import { useMutation } from '@apollo/client'
+import { useMutation, useApolloClient } from '@apollo/client'
 import { AUTHENTICATE } from '../graphql/mutations'
-import AuthStorage from '../utilities/authStorage'
-const authStorage = new AuthStorage('accessToken')
+import useAuthStorage from './useAuthStorage'
 
 const useSignIn = () => {
   const [mutate, result] = useMutation(AUTHENTICATE)
+  // access the storage instance
+  const authStorage = useAuthStorage()
+  const apolloClient = useApolloClient()
 
   const signIn = async ({ username, password }) => {
     const variables = { credentials: { username, password } }
@@ -16,8 +18,11 @@ const useSignIn = () => {
         authenticate: { accessToken },
       } = data
       try {
-        authStorage.setAccessToken(accessToken)
+        await authStorage.setAccessToken(accessToken)
         console.info('User successfully logged in')
+        // reset the Apollo Client's store
+        // this clears the Apollo Client's cache and re-executes all active queries
+        apolloClient.resetStore()
       } catch (storageError) {
         throw new Error(`Error in storing accessToken: ${storageError}`)
       }
