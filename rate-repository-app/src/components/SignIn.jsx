@@ -79,7 +79,7 @@ const validationSchema = yup.object().shape({
     .required('Password is required'),
 })
 
-const SignIn = ({}) => {
+const SignIn = () => {
   // destructure signIn from the tuple
   const [signIn] = useSignIn()
   const [error, setError] = useState('')
