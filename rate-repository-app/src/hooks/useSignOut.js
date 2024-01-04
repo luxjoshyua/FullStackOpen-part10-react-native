@@ -13,8 +13,6 @@ const useSignOutHandler = (authStorage, apolloClient) => {
     } catch (error) {
       console.error(`Error signing out: ${error}`)
     }
-
-    return
   }
 
   return handleSignOut

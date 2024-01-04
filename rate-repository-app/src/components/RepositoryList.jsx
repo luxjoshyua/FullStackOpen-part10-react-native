@@ -17,13 +17,7 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />
 
-const RepositoryList = () => {
-  // destructure the repositories data from the useRepositories function
-  const { repositories, loading, error, refetch, networkStatus } = useRepositories()
-
-  if (loading) return <Loading loading={loading} loadingMessage={networkStatus?.loading} />
-  if (error) return <Error error={error.message} />
-
+export const RepositoryListContainer = ({ repositories }) => {
   // get the nodes from the edges array
   const repositoryNodes = repositories ? repositories.edges.map((edge) => edge.node) : []
 
@@ -36,6 +30,16 @@ const RepositoryList = () => {
       />
     </View>
   )
+}
+
+const RepositoryList = () => {
+  // destructure the repositories data from the useRepositories function
+  const { repositories, loading, error, refetch, networkStatus } = useRepositories()
+
+  if (loading) return <Loading loading={loading} loadingMessage={networkStatus?.loading} />
+  if (error) return <Error error={error.message} />
+
+  return <RepositoryListContainer repositories={repositories} />
 }
 
 export default RepositoryList

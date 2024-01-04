@@ -2,6 +2,11 @@ import { View, StyleSheet, Text, Image } from 'react-native'
 import { shorternNumber } from '../utilities'
 
 const styles = StyleSheet.create({
+  outer: {
+    marginBottom: 1,
+    backgroundColor: '#ffffff',
+    padding: 20,
+  },
   container: {
     display: 'flex',
     flexDirection: 'row',
@@ -17,6 +22,13 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     marginRight: 20,
+  },
+  language: {
+    backgroundColor: '#0366d6',
+    color: 'white',
+    padding: 5,
+    maxWidth: 90,
+    textAlign: 'center',
   },
 })
 
@@ -49,7 +61,7 @@ const RepositoryItem = ({ item }) => {
   const forksCountDecimal = shorternNumber(forksCount)
 
   return (
-    <View style={{ marginBottom: 1, backgroundColor: '#ffffff', padding: 20 }}>
+    <View style={styles.outer} testID="repositoryItem">
       <View style={styles.container}>
         <View>
           <Image source={{ uri: ownerAvatarUrl }} style={styles.image} />
@@ -57,16 +69,7 @@ const RepositoryItem = ({ item }) => {
         <View>
           <Text style={{ fontWeight: '700', marginBottom: 5, fontSize: 16 }}>{fullName}</Text>
           <Text style={{ marginBottom: 5 }}>{description}</Text>
-          <Text
-            style={{
-              backgroundColor: '#0366d6',
-              color: 'white',
-              padding: 5,
-              maxWidth: 90,
-              textAlign: 'center',
-            }}>
-            {language}
-          </Text>
+          <Text style={styles.language}>{language}</Text>
         </View>
       </View>
       <View style={styles.row}>
