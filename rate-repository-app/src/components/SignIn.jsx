@@ -50,7 +50,8 @@ const initialValues = {
   password: '',
 }
 
-const SignInForm = ({ onSubmit, error }) => {
+// pure component, no side-effects, no hooks
+export const SignInContainer = ({ onSubmit, error }) => {
   return (
     <View style={styles.container}>
       <FormikTextInput name="username" placeholder="Username" style={styles.input} />
@@ -67,6 +68,32 @@ const SignInForm = ({ onSubmit, error }) => {
     </View>
   )
 }
+
+const SignInForm = ({ onSubmit, error }) => {
+  return (
+    <View>
+      <SignInContainer onSubmit={onSubmit} error={error} />
+    </View>
+  )
+}
+
+// const SignInForm = ({ onSubmit, error }) => {
+//   return (
+//     <View style={styles.container}>
+//       <FormikTextInput name="username" placeholder="Username" style={styles.input} />
+//       <FormikTextInput
+//         name="password"
+//         placeholder="Password"
+//         secureTextEntry={true}
+//         style={styles.input}
+//       />
+//       <Pressable onPress={onSubmit} style={styles.submitBtn}>
+//         <Text style={styles.submitBtnText}>Sign in</Text>
+//       </Pressable>
+//       {error && <Error error={error} />}
+//     </View>
+//   )
+// }
 
 const validationSchema = yup.object().shape({
   username: yup
@@ -92,7 +119,6 @@ const SignIn = () => {
       const {
         authenticate: { accessToken },
       } = data
-      // console.log(`response = `, data)
       accessToken ? navigate('/') : null
     } catch (loginError) {
       // access the message from the object

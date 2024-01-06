@@ -20,3 +20,7 @@ the app can be quite temperamental at compile time, if happening, try this:
 2. `shift + i` - select iphone model
 3. run on ios in terminal
 4. hopefully compiles
+
+## Testing
+
+To run a certain test file in the **tests** folder, use e.g. `npm test -- form.test.js`
