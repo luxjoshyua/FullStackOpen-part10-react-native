@@ -1,10 +1,29 @@
 import { View, StyleSheet } from 'react-native'
 import Text from './Text'
+import theme from '../styles/theme'
 
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.white,
+  },
+  circleOuter: {
+    width: 50, // Adjust as needed
+    height: 50, // Adjust as needed
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
+    padding: 10,
+    backgroundColor: theme.colors.white,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  circleText: {
+    fontSize: theme.fontSizes.heading,
+    fontWeight: theme.fontWeights.bold,
+    textAlign: 'center',
+    color: theme.colors.primary,
   },
 })
 
@@ -39,4 +58,12 @@ const Error = ({ error }) => {
   )
 }
 
-export { Loading, Error }
+const CircleWithNumber = ({ number }) => {
+  return (
+    <View style={styles.circleOuter}>
+      <Text style={styles.circleText}>{number}</Text>
+    </View>
+  )
+}
+
+export { Loading, Error, CircleWithNumber }

@@ -1,16 +1,18 @@
-import { View, StyleSheet, Text, Image, Button, Pressable } from 'react-native'
+import { View, StyleSheet, Text, Image, Pressable, FlatList } from 'react-native'
 import { useParams } from 'react-router-native'
 import { useQuery } from '@apollo/client'
 import * as Linking from 'expo-linking'
 
-import { GET_REPOSITORY } from '../graphql/queries'
+import { GET_REPOSITORY, GET_REVIEW } from '../graphql/queries'
+import { ItemSeparator } from './RepositoryList'
+import ReviewItem from './ReviewItem'
 import { Loading, Error } from './Miscellaneous'
 import { shorternNumber } from '../utilities'
 import theme from '../styles/theme'
 
 const styles = StyleSheet.create({
   outer: {
-    marginBottom: 1,
+    marginBottom: 20,
     backgroundColor: theme.colors.white,
     padding: 20,
   },
@@ -92,8 +94,15 @@ const RepositoryItem = ({ item }) => {
     skip: !id, // don't fetch if id is not available
   })
 
-  // could handle loading and error states here if needed, destructure from repositoryData
+  const { data: reviewData } = useQuery(GET_REVIEW, {
+    variables: { repositoryId: id },
+    skip: !id, // don't fetch if id is not available
+  })
+
+  // handle fetching the reviews data for a single repository
   const { loading, error, repository } = repositoryData || {}
+  const reviews = reviewData?.repository?.reviews
+  const reviewNodes = reviews ? reviews.edges.map((edge) => edge.node) : []
 
   if (loading) return <Loading />
 
@@ -114,49 +123,60 @@ const RepositoryItem = ({ item }) => {
 
   if (repository) {
     return (
-      <View style={styles.outer} testID="repositoryItem">
-        <View style={styles.container}>
-          <View>
-            <Image source={{ uri: repository.ownerAvatarUrl }} style={styles.image} />
+      <View>
+        <View style={styles.outer} testID="repositoryItem">
+          <View style={styles.container}>
+            <View>
+              <Image source={{ uri: repository.ownerAvatarUrl }} style={styles.image} />
+            </View>
+            <View>
+              <Text style={{ fontWeight: '700', marginBottom: 5, fontSize: 16 }}>
+                {repository.fullName}
+              </Text>
+              <Text style={{ marginBottom: 5 }}>{repository.description}</Text>
+              <Text style={styles.language}>{repository.language}</Text>
+            </View>
+          </View>
+          <View style={styles.row}>
+            <View style={{ display: 'flex' }}>
+              <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
+                {starsDecimalR}
+              </Text>
+              <Text>Stars</Text>
+            </View>
+            <View style={{ display: 'flex' }}>
+              <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
+                {forksCountDecimalR}
+              </Text>
+              <Text>Forks</Text>
+            </View>
+            <View style={{ display: 'flex' }}>
+              <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
+                {repository.reviewCount}
+              </Text>
+              <Text>Reviews</Text>
+            </View>
+            <View style={{ display: 'flex' }}>
+              <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
+                {repository.ratingAverage}
+              </Text>
+              <Text>Rating average</Text>
+            </View>
           </View>
           <View>
-            <Text style={{ fontWeight: '700', marginBottom: 5, fontSize: 16 }}>
-              {repository.fullName}
-            </Text>
-            <Text style={{ marginBottom: 5 }}>{repository.description}</Text>
-            <Text style={styles.language}>{repository.language}</Text>
+            <Pressable style={styles.button} onPress={() => handleButtonClick(repository)}>
+              <Text style={styles.buttonText}>Open in GitHub</Text>
+            </Pressable>
           </View>
         </View>
-        <View style={styles.row}>
-          <View style={{ display: 'flex' }}>
-            <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
-              {starsDecimalR}
-            </Text>
-            <Text>Stars</Text>
-          </View>
-          <View style={{ display: 'flex' }}>
-            <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
-              {forksCountDecimalR}
-            </Text>
-            <Text>Forks</Text>
-          </View>
-          <View style={{ display: 'flex' }}>
-            <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
-              {repository.reviewCount}
-            </Text>
-            <Text>Reviews</Text>
-          </View>
-          <View style={{ display: 'flex' }}>
-            <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
-              {repository.ratingAverage}
-            </Text>
-            <Text>Rating average</Text>
-          </View>
-        </View>
+        {/* reviews go here, do a flatlist */}
         <View>
-          <Pressable style={styles.button} onPress={() => handleButtonClick(repository)}>
-            <Text style={styles.buttonText}>Open in GitHub</Text>
-          </Pressable>
+          <FlatList
+            data={reviewNodes}
+            ItemSeparatorComponent={ItemSeparator}
+            renderItem={({ item }) => <ReviewItem review={item} />}
+            keyExtractor={({ id }) => id}
+          />
         </View>
       </View>
     )

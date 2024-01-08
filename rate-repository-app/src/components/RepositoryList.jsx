@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const ItemSeparator = () => <View style={styles.separator} />
+export const ItemSeparator = () => <View style={styles.separator} />
 
 export const RepositoryListContainer = ({ repositories }) => {
   // get the nodes from the edges array
