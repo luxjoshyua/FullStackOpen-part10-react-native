@@ -92,6 +92,7 @@ const RepositoryItem = ({ item }) => {
   const { data: repositoryData } = useQuery(GET_REPOSITORY, {
     variables: { repositoryId: id },
     skip: !id, // don't fetch if id is not available
+    fetchPolicy: 'cache-and-network', // prevent getting cached
   })
 
   const { data: reviewData } = useQuery(GET_REVIEW, {

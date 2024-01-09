@@ -26,6 +26,7 @@ export const RepositoryListContainer = ({ repositories }) => {
 
   const handlePress = (item) => {
     const repositoryId = item.id
+    console.log(repositoryId)
     navigate(`/repository/${repositoryId}`)
   }
 
@@ -33,7 +34,6 @@ export const RepositoryListContainer = ({ repositories }) => {
     <View>
       <FlatList
         data={repositoryNodes}
-        ItemSeparatorComponent={ItemSeparator}
         renderItem={({ item }) => (
           <Pressable onPress={() => handlePress(item)}>
             <RepositoryItem item={item} />

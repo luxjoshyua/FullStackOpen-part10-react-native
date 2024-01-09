@@ -8,8 +8,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.white,
   },
   circleOuter: {
-    width: 50, // Adjust as needed
-    height: 50, // Adjust as needed
+    width: 50,
+    height: 50,
     borderRadius: 50,
     borderWidth: 2,
     borderColor: theme.colors.primary,

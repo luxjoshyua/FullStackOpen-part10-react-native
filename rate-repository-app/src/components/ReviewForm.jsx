@@ -6,7 +6,7 @@ import * as yup from 'yup'
 import Text from './Text'
 import FormikTextInput from './FormikTextInput'
 import theme from '../styles/theme'
-import useSignIn from '../hooks/useSignIn'
+import useCreateReview from '../hooks/useCreateReview'
 import { Error } from './Miscellaneous'
 
 /**
@@ -46,62 +46,71 @@ const styles = StyleSheet.create({
 })
 
 const initialValues = {
-  username: '',
-  password: '',
+  ownerName: '',
+  rating: '',
+  repositoryName: '',
+  text: '',
 }
 
 // pure component, no side-effects, no hooks
-export const SignInContainer = ({ onSubmit, error }) => {
+export const ReviewFormContainer = ({ onSubmit, error }) => {
   return (
     <View style={styles.container}>
-      <FormikTextInput name="username" placeholder="Username" style={styles.input} />
+      <FormikTextInput name="ownerName" placeholder="Repository owner name" style={styles.input} />
+      <FormikTextInput name="repositoryName" placeholder="Repository name" style={styles.input} />
       <FormikTextInput
-        name="password"
-        placeholder="Password"
-        secureTextEntry={true}
+        name="rating"
+        placeholder="Rating between 0 and 100"
+        keyboardType="numeric"
         style={styles.input}
       />
+      <FormikTextInput name="text" placeholder="Review" style={styles.input} multiline="true" />
       <Pressable onPress={onSubmit} style={styles.submitBtn}>
-        <Text style={styles.submitBtnText}>Sign in</Text>
+        <Text style={styles.submitBtnText}>Create a review</Text>
       </Pressable>
       {error && <Error error={error} />}
     </View>
   )
 }
 
-const SignInForm = ({ onSubmit, error }) => {
+const ReviewForm = ({ onSubmit, error }) => {
   return (
     <View>
-      <SignInContainer onSubmit={onSubmit} error={error} />
+      <ReviewFormContainer onSubmit={onSubmit} error={error} />
     </View>
   )
 }
 
 const validationSchema = yup.object().shape({
-  username: yup
+  ownerName: yup
     .string()
-    .min(4, 'Username must be at least 4 characters')
-    .required('Username is required'),
-  password: yup
+    .min(4, 'Repository owner name must be at least 4 characters')
+    .required('Repository owner name is required'),
+  rating: yup
+    .number()
+    .min(0, 'Rating must be at least 0')
+    .max(100, 'Rating must be no more than 100')
+    .required('Rating is required'),
+  repositoryName: yup
     .string()
-    .min(5, 'Password must be at least 5 characters')
-    .required('Password is required'),
+    .min(3, 'Repository name must be at least 3 characters')
+    .required('Repository name is required'),
+  review: yup.string(),
 })
 
-const SignIn = () => {
-  // destructure signIn from the tuple
-  const [signIn] = useSignIn()
+const Review = () => {
+  const { submitReview } = useCreateReview()
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
   const onSubmit = async (values) => {
-    const { username, password } = values
+    const { ownerName, rating, repositoryName, review } = values
     try {
-      const { data } = await signIn({ username, password })
-      const {
-        authenticate: { accessToken },
-      } = data
-      accessToken ? navigate('/') : null
+      const { data } = await submitReview({ ownerName, rating, repositoryName, review })
+      console.log(`DATA = `, data)
+
+      // navigate here to the specific repo
+      // accessToken ? navigate('/') : null
     } catch (loginError) {
       // access the message from the object
       setError(loginError.message)
@@ -114,9 +123,9 @@ const SignIn = () => {
   // is not called
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({ handleSubmit }) => <SignInForm onSubmit={handleSubmit} error={error} />}
+      {({ handleSubmit }) => <ReviewForm onSubmit={handleSubmit} error={error} />}
     </Formik>
   )
 }
 
-export default SignIn
+export default Review

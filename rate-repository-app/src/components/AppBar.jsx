@@ -52,17 +52,20 @@ const AppBar = () => {
           <AppBarTab text="Repositories" />
         </Link>
         {user ? (
-          <>
+          <View style={styles.inner}>
             <Pressable style={styles.link} onPress={handleSignOut}>
               <AppBarTab text="Sign-out" />
             </Pressable>
-          </>
+            <Link to="/review" style={styles.link}>
+              <AppBarTab text="Create a review" />
+            </Link>
+          </View>
         ) : (
-          <>
+          <View>
             <Link to="/signin" style={styles.link}>
               <AppBarTab text="Sign-in" />
             </Link>
-          </>
+          </View>
         )}
       </ScrollView>
     </View>
