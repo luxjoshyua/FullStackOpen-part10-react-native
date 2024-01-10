@@ -52,6 +52,16 @@ const initialValues = {
   text: '',
 }
 
+/**
+ * 
+ * example 
+  "ownerName": "jaredpalmer",
+  "name": "formik"
+  
+ "ownerName": "async-library",     
+  "name": "react-async"
+ */
+
 // pure component, no side-effects, no hooks
 export const ReviewFormContainer = ({ onSubmit, error }) => {
   return (
@@ -95,7 +105,7 @@ const validationSchema = yup.object().shape({
     .string()
     .min(3, 'Repository name must be at least 3 characters')
     .required('Repository name is required'),
-  review: yup.string(),
+  text: yup.string(),
 })
 
 const Review = () => {
@@ -104,23 +114,25 @@ const Review = () => {
   const navigate = useNavigate()
 
   const onSubmit = async (values) => {
-    const { ownerName, rating, repositoryName, review } = values
-    try {
-      const { data } = await submitReview({ ownerName, rating, repositoryName, review })
-      console.log(`DATA = `, data)
+    const { ownerName, rating, repositoryName, text } = values
+    console.log(ownerName, rating, repositoryName, text)
 
-      // navigate here to the specific repo
-      // accessToken ? navigate('/') : null
-    } catch (loginError) {
+    try {
+      const { repositoryId } = await submitReview({
+        ownerName,
+        rating: +rating,
+        repositoryName,
+        text,
+      })
+      console.log(repositoryId)
+      navigate(`/repository/${repositoryId}`)
+    } catch (reviewFormError) {
       // access the message from the object
-      setError(loginError.message)
-      console.error(`Error logging-in: ${loginError}`)
+      setError(reviewFormError.message)
+      console.error(`Error submitting review: ${reviewFormError}`)
     }
   }
 
-  // validation is performed by default every time a field's value changes and when
-  // the onSubmit function is called. If validation fails, onSubmit prop of the Formik component
-  // is not called
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({ handleSubmit }) => <ReviewForm onSubmit={handleSubmit} error={error} />}

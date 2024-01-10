@@ -19,7 +19,9 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'row',
+    marginRight: 20,
     marginBottom: 20,
+    flex: 1,
   },
   row: {
     flexDirection: 'row',
