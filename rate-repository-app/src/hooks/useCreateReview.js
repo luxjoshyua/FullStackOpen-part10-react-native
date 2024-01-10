@@ -2,29 +2,19 @@ import { useMutation } from '@apollo/client'
 import { CREATE_REVIEW } from '../graphql/mutations'
 
 const useCreateReview = () => {
-  const [mutate, result] = useMutation(CREATE_REVIEW)
+  const [mutate] = useMutation(CREATE_REVIEW)
 
   const submitReview = async ({ ownerName, rating, repositoryName, text }) => {
-    // console.log(`variables = `, variables)
-    const { data } = await mutate({
-      variables: {
-        review: {
-          ownerName,
-          rating,
-          repositoryName,
-          text,
-        },
-      },
-    })
-    return data?.createReview
+    const variables = { review: { ownerName, rating, repositoryName, text } }
 
-    // try {
-    //   const payload = await mutate({ variables })
-    //   console.log('payload = ', payload)
-    //   return payload.data?.createReview
-    // } catch (reviewError) {
-    //   console.error(`Error in submitReview: ${reviewError}`)
-    // }
+    try {
+      const { data } = await mutate({
+        variables,
+      })
+      return data?.createReview
+    } catch (reviewError) {
+      console.error(`Error in submitReview: ${reviewError}`)
+    }
   }
 
   return { submitReview }

@@ -14,13 +14,14 @@ const styles = StyleSheet.create({
   outer: {
     marginBottom: 20,
     backgroundColor: theme.colors.white,
-    padding: 20,
+    padding: 25,
   },
   container: {
     display: 'flex',
     flexDirection: 'row',
     marginRight: 20,
     marginBottom: 20,
+    paddingRight: 30,
     flex: 1,
   },
   row: {
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
  *  - reviews
  *  - rating
  */
-const RepositoryItem = ({ item }) => {
+const RepositoryItem = ({ item, button }) => {
   const {
     fullName,
     description,
@@ -89,142 +90,64 @@ const RepositoryItem = ({ item }) => {
     ownerAvatarUrl,
   } = item || {}
 
-  const { id } = useParams()
-
-  const { data: repositoryData } = useQuery(GET_REPOSITORY, {
-    variables: { repositoryId: id },
-    skip: !id, // don't fetch if id is not available
-    fetchPolicy: 'cache-and-network', // prevent getting cached
-  })
-
-  const { data: reviewData } = useQuery(GET_REVIEW, {
-    variables: { repositoryId: id },
-    skip: !id, // don't fetch if id is not available
-  })
-
-  // handle fetching the reviews data for a single repository
-  const { loading, error, repository } = repositoryData || {}
-  const reviews = reviewData?.repository?.reviews
-  const reviewNodes = reviews ? reviews.edges.map((edge) => edge.node) : []
-
-  if (loading) return <Loading />
-
-  if (error) return <Error error={error} />
-
   const starsDecimal = shorternNumber(stargazersCount)
-  const starsDecimalR = shorternNumber(repository?.stargazersCount)
   const forksCountDecimal = shorternNumber(forksCount)
-  const forksCountDecimalR = shorternNumber(repository?.forksCount)
 
-  const handleButtonClick = (repository) => {
+  const handleButtonClick = (item) => {
     try {
-      return Linking.openURL(repository.url)
+      return Linking.openURL(item.url)
     } catch (urlError) {
       console.error(`Error in github url button click: ${urlError}`)
     }
   }
 
-  if (repository) {
-    return (
-      <View>
-        <View style={styles.outer} testID="repositoryItem">
-          <View style={styles.container}>
-            <View>
-              <Image source={{ uri: repository.ownerAvatarUrl }} style={styles.image} />
-            </View>
-            <View>
-              <Text style={{ fontWeight: '700', marginBottom: 5, fontSize: 16 }}>
-                {repository.fullName}
-              </Text>
-              <Text style={{ marginBottom: 5 }}>{repository.description}</Text>
-              <Text style={styles.language}>{repository.language}</Text>
-            </View>
-          </View>
-          <View style={styles.row}>
-            <View style={{ display: 'flex' }}>
-              <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
-                {starsDecimalR}
-              </Text>
-              <Text>Stars</Text>
-            </View>
-            <View style={{ display: 'flex' }}>
-              <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
-                {forksCountDecimalR}
-              </Text>
-              <Text>Forks</Text>
-            </View>
-            <View style={{ display: 'flex' }}>
-              <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
-                {repository.reviewCount}
-              </Text>
-              <Text>Reviews</Text>
-            </View>
-            <View style={{ display: 'flex' }}>
-              <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
-                {repository.ratingAverage}
-              </Text>
-              <Text>Rating average</Text>
-            </View>
-          </View>
-          <View>
-            <Pressable style={styles.button} onPress={() => handleButtonClick(repository)}>
-              <Text style={styles.buttonText}>Open in GitHub</Text>
-            </Pressable>
-          </View>
-        </View>
-        {/* reviews go here, do a flatlist */}
+  return (
+    <View style={styles.outer} testID="repositoryItem">
+      <View style={styles.container}>
         <View>
-          <FlatList
-            data={reviewNodes}
-            ItemSeparatorComponent={ItemSeparator}
-            renderItem={({ item }) => <ReviewItem review={item} />}
-            keyExtractor={({ id }) => id}
-          />
+          <Image source={{ uri: ownerAvatarUrl }} style={styles.image} />
+        </View>
+        <View>
+          <Text style={{ fontWeight: '700', marginBottom: 5, fontSize: 16 }}>{fullName}</Text>
+          <Text style={{ marginBottom: 5 }}>{description}</Text>
+          <Text style={styles.language}>{language}</Text>
         </View>
       </View>
-    )
-  } else {
-    return (
-      <View style={styles.outer} testID="repositoryItem">
-        <View style={styles.container}>
-          <View>
-            <Image source={{ uri: ownerAvatarUrl }} style={styles.image} />
-          </View>
-          <View>
-            <Text style={{ fontWeight: '700', marginBottom: 5, fontSize: 16 }}>{fullName}</Text>
-            <Text style={{ marginBottom: 5 }}>{description}</Text>
-            <Text style={styles.language}>{language}</Text>
-          </View>
+      <View style={styles.row}>
+        <View style={{ display: 'flex' }}>
+          <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
+            {starsDecimal}
+          </Text>
+          <Text>Stars</Text>
         </View>
-        <View style={styles.row}>
-          <View style={{ display: 'flex' }}>
-            <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
-              {starsDecimal}
-            </Text>
-            <Text>Stars</Text>
-          </View>
-          <View style={{ display: 'flex' }}>
-            <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
-              {forksCountDecimal}
-            </Text>
-            <Text>Forks</Text>
-          </View>
-          <View style={{ display: 'flex' }}>
-            <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
-              {reviewCount}
-            </Text>
-            <Text>Reviews</Text>
-          </View>
-          <View style={{ display: 'flex' }}>
-            <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
-              {ratingAverage}
-            </Text>
-            <Text>Rating average</Text>
-          </View>
+        <View style={{ display: 'flex' }}>
+          <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
+            {forksCountDecimal}
+          </Text>
+          <Text>Forks</Text>
+        </View>
+        <View style={{ display: 'flex' }}>
+          <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
+            {reviewCount}
+          </Text>
+          <Text>Reviews</Text>
+        </View>
+        <View style={{ display: 'flex' }}>
+          <Text style={{ fontWeight: '700', paddingBottom: 10, textAlign: 'center' }}>
+            {ratingAverage}
+          </Text>
+          <Text>Rating average</Text>
         </View>
       </View>
-    )
-  }
+      {button ? (
+        <View>
+          <Pressable style={styles.button} onPress={() => handleButtonClick(item)}>
+            <Text style={styles.buttonText}>Open in GitHub</Text>
+          </Pressable>
+        </View>
+      ) : null}
+    </View>
+  )
 }
 
 export default RepositoryItem

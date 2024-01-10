@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
 })
 
 const ReviewItem = ({ review }) => {
-  // console.dir(review)
   const {
     rating,
     user: { username },
@@ -56,10 +55,8 @@ const ReviewItem = ({ review }) => {
     <View style={styles.outer} testID="reviewItem">
       <View style={styles.row}>
         <View style={styles.circleOuter}>
-          {/* rating average */}
           <CircleWithNumber number={rating} />
         </View>
-        {/* name of reviewer, date, text, description  */}
         <View style={styles.textOuter}>
           <Text style={styles.heading}>{username}</Text>
           <Text style={styles.date}>{formattedDate}</Text>

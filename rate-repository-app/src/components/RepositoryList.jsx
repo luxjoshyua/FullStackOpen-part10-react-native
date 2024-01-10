@@ -26,7 +26,6 @@ export const RepositoryListContainer = ({ repositories }) => {
 
   const handlePress = (item) => {
     const repositoryId = item.id
-    console.log(repositoryId)
     navigate(`/repository/${repositoryId}`)
   }
 
