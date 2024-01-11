@@ -61,9 +61,12 @@ const AppBar = () => {
             </Link>
           </View>
         ) : (
-          <View>
+          <View style={styles.inner}>
             <Link to="/signin" style={styles.link}>
               <AppBarTab text="Sign-in" />
+            </Link>
+            <Link to="/signup" style={styles.link}>
+              <AppBarTab text="Sign-up" />
             </Link>
           </View>
         )}

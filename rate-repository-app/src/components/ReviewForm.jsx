@@ -115,7 +115,6 @@ const Review = () => {
 
   const onSubmit = async (values) => {
     const { ownerName, rating, repositoryName, text } = values
-    console.log(ownerName, rating, repositoryName, text)
 
     try {
       const { repositoryId } = await submitReview({
@@ -124,7 +123,7 @@ const Review = () => {
         repositoryName,
         text,
       })
-      console.log(repositoryId)
+      // console.log(repositoryId)
       navigate(`/repository/${repositoryId}`)
     } catch (reviewFormError) {
       // access the message from the object
