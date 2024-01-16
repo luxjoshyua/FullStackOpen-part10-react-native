@@ -1,9 +1,10 @@
+import { useState, useEffect } from 'react'
 import { FlatList, View, StyleSheet, Pressable } from 'react-native'
 import { useNavigate } from 'react-router-native'
-
 import RepositoryItem from './RepositoryItem'
 import useRepositories from '../hooks/useRepositories'
 import { Loading, Error } from './Miscellaneous'
+import RepositorySort from './RepositorySort'
 
 /**
  *
@@ -19,9 +20,9 @@ const styles = StyleSheet.create({
 
 export const ItemSeparator = () => <View style={styles.separator} />
 
-export const RepositoryListContainer = ({ repositories }) => {
+export const RepositoryListContainer = ({ repositories, repoRefetch }) => {
   // get the nodes from the edges array
-  const repositoryNodes = repositories ? repositories.edges.map((edge) => edge.node) : []
+  const repositoryNodes = repositories?.edges?.map((edge) => edge.node)
   const navigate = useNavigate()
 
   const handlePress = (item) => {
@@ -33,6 +34,7 @@ export const RepositoryListContainer = ({ repositories }) => {
     <View>
       <FlatList
         data={repositoryNodes}
+        ListHeaderComponent={<RepositorySort repoRefetch={repoRefetch} />}
         renderItem={({ item }) => (
           <Pressable onPress={() => handlePress(item)}>
             <RepositoryItem item={item} />
@@ -50,7 +52,11 @@ const RepositoryList = () => {
   if (loading) return <Loading loading={loading} loadingMessage={networkStatus?.loading} />
   if (error) return <Error error={error.message} />
 
-  return <RepositoryListContainer repositories={repositories} />
+  return (
+    <View>
+      <RepositoryListContainer repositories={repositories} repoRefetch={refetch} />
+    </View>
+  )
 }
 
 export default RepositoryList

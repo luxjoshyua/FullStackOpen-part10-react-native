@@ -21,14 +21,11 @@ const useRepositories = () => {
   //   setRepositories(json)
   // }
 
-  // when the app first mounts, never reaches the data set in useEffect
-
   useEffect(() => {
     setRepositories(data?.repositories)
     // fetchRepositories()
   }, [data])
 
-  // return { repositories, loading, refetch: fetchRepositories }
   return { repositories, loading, error, refetch, networkStatus }
 }
 
