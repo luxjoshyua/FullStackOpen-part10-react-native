@@ -1,33 +1,18 @@
 import { Button, Menu, PaperProvider, useMenuTrigger } from 'react-native-paper'
 import { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
+import RNPickerSelect from 'react-native-picker-select'
+import theme from '../styles/theme'
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    paddingBottom: 160,
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 20,
+    fontSize: theme.fontSizes.subheading,
   },
 })
 
 const RepositorySort = ({ repoRefetch }) => {
   const [selectedRepo, setSelectedRepo] = useState('Latest repositories')
-  const [visible, setVisible] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-
-  const openMenu = () => {
-    setVisible(true)
-    setIsMenuOpen(true)
-  }
-  const closeMenu = () => setVisible(false)
 
   const handleRepoChange = (selected) => {
     setSelectedRepo(selected)
@@ -38,38 +23,24 @@ const RepositorySort = ({ repoRefetch }) => {
     } else {
       repoRefetch({ orderBy: 'CREATED_AT', orderDirection: 'DESC' })
     }
-    closeMenu()
+    // closeMenu()
   }
 
   return (
-    <PaperProvider theme={{ dark: false }}>
-      <View style={styles.container}>
-        <Menu
-          visible={visible}
-          onDismiss={closeMenu}
-          anchor={<Button onPress={openMenu}>{selectedRepo}</Button>}
-          style={{
-            top: 0,
-          }}>
-          <Menu.Item title="Select an item" disabled />
-          <Menu.Item
-            title="Latest repositories"
-            onPress={() => {
-              handleRepoChange('Latest repositories')
-            }}
-            css={{ zIndex: 10, backgroundColor: 'orange' }}
-          />
-          <Menu.Item
-            onPress={() => handleRepoChange('Highest rated repositories')}
-            title="Highest rated repositories"
-          />
-          <Menu.Item
-            onPress={() => handleRepoChange('Lowest rated repositories')}
-            title="Lowest rated repositories"
-          />
-        </Menu>
-      </View>
-    </PaperProvider>
+    <View style={styles.container}>
+      <RNPickerSelect
+        onValueChange={(value) => handleRepoChange(value)}
+        pickerProps={{ darkTheme: 'true' }}
+        style={{
+          placeholder: { fontSize: theme.fontSizes.subheading, color: theme.colors.textPrimary },
+        }}
+        items={[
+          { label: 'Highest rated repositories', value: 'Highest rated repositories' },
+          { label: 'Lowest rated repositories', value: 'Lowest rated repositories' },
+          { label: 'Latest repositories', value: 'Latest repositories' },
+        ]}
+      />
+    </View>
   )
 }
 
