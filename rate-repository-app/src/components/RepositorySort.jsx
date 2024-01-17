@@ -1,50 +1,39 @@
-import { Button, Menu, PaperProvider } from 'react-native-paper'
+import { Button, Menu, PaperProvider, useMenuTrigger } from 'react-native-paper'
 import { useState } from 'react'
-import { View, Text } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 
-/**
- *
- * @returns
- * repositories query has an argument
- */
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    paddingBottom: 160,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+})
 
 const RepositorySort = ({ repoRefetch }) => {
-  const [selectedRepo, setSelectedRepo] = useState('latest')
+  const [selectedRepo, setSelectedRepo] = useState('Latest repositories')
   const [visible, setVisible] = useState(false)
-  const openMenu = () => setVisible(true)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const openMenu = () => {
+    setVisible(true)
+    setIsMenuOpen(true)
+  }
   const closeMenu = () => setVisible(false)
 
   const handleRepoChange = (selected) => {
     setSelectedRepo(selected)
-    // switch (selected) {
-    //   case 'latest':
-    //     repoRefetch({
-    //       orderBy: 'CREATED_AT',
-    //       orderDirection: 'DESC',
-    //     })
-    //     break
-    //   case 'highestRated':
-    //     repoRefetch({
-    //       orderBy: 'RATING_AVERAGE',
-    //       orderDirection: 'DESC',
-    //     })
-    //     break
-    //   case 'lowestRated':
-    //     repoRefetch({
-    //       orderBy: 'RATING_AVERAGE',
-    //       orderDirection: 'ASC',
-    //     })
-    //   default:
-    //     console.error('No selected repo in state, using latest as fallback')
-    //     repoRefetch({
-    //       orderBy: 'CREATED_AT',
-    //       orderDirection: 'DESC',
-    //     })
-    //     break
-    // }
-    if (selected === 'highestRated') {
+    if (selected === 'Highest rated repositories') {
       repoRefetch({ orderBy: 'RATING_AVERAGE', orderDirection: 'DESC' })
-    } else if (selected === 'lowestRated') {
+    } else if (selected === 'Lowest rated repositories') {
       repoRefetch({ orderBy: 'RATING_AVERAGE', orderDirection: 'ASC' })
     } else {
       repoRefetch({ orderBy: 'CREATED_AT', orderDirection: 'DESC' })
@@ -53,35 +42,29 @@ const RepositorySort = ({ repoRefetch }) => {
   }
 
   return (
-    <PaperProvider>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'flex-start',
-          flexGrow: 1,
-          height: 180,
-        }}>
+    <PaperProvider theme={{ dark: false }}>
+      <View style={styles.container}>
         <Menu
           visible={visible}
           onDismiss={closeMenu}
-          css={{ zIndex: '20' }}
-          anchor={<Button onPress={openMenu}>Select ordering type</Button>}
+          anchor={<Button onPress={openMenu}>{selectedRepo}</Button>}
           style={{
             top: 0,
           }}>
-          {/* <Menu.Item title="Select an item" disabled /> */}
+          <Menu.Item title="Select an item" disabled />
           <Menu.Item
             title="Latest repositories"
-            onPress={() => handleRepoChange('latest')}
+            onPress={() => {
+              handleRepoChange('Latest repositories')
+            }}
             css={{ zIndex: 10, backgroundColor: 'orange' }}
           />
           <Menu.Item
-            onPress={() => handleRepoChange('highestRated')}
+            onPress={() => handleRepoChange('Highest rated repositories')}
             title="Highest rated repositories"
           />
           <Menu.Item
-            onPress={() => handleRepoChange('lowestRated')}
+            onPress={() => handleRepoChange('Lowest rated repositories')}
             title="Lowest rated repositories"
           />
         </Menu>
