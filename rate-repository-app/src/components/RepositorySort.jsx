@@ -1,4 +1,3 @@
-import { Button, Menu, PaperProvider, useMenuTrigger } from 'react-native-paper'
 import { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
@@ -6,8 +5,7 @@ import theme from '../styles/theme'
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    fontSize: theme.fontSizes.subheading,
+    padding: theme.containerPadding.padding,
   },
 })
 
@@ -23,7 +21,6 @@ const RepositorySort = ({ repoRefetch }) => {
     } else {
       repoRefetch({ orderBy: 'CREATED_AT', orderDirection: 'DESC' })
     }
-    // closeMenu()
   }
 
   return (

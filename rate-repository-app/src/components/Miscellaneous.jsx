@@ -4,7 +4,7 @@ import theme from '../styles/theme'
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: theme.containerPadding.padding,
     backgroundColor: theme.colors.white,
   },
   circleOuter: {

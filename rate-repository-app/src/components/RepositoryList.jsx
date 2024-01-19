@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Component } from 'react'
 import { FlatList, View, StyleSheet, Pressable } from 'react-native'
 import { useNavigate } from 'react-router-native'
 import RepositoryItem from './RepositoryItem'
 import useRepositories from '../hooks/useRepositories'
 import { Loading, Error } from './Miscellaneous'
 import RepositorySort from './RepositorySort'
+import RepositorySearch from './RepositorySearch'
 
 /**
  *
@@ -34,7 +35,13 @@ export const RepositoryListContainer = ({ repositories, repoRefetch }) => {
     <View>
       <FlatList
         data={repositoryNodes}
-        ListHeaderComponent={<RepositorySort repoRefetch={repoRefetch} />}
+        ListHeaderComponent={
+          <View>
+            <RepositorySearch repoRefetch={repoRefetch} />
+            <RepositorySort repoRefetch={repoRefetch} />
+          </View>
+        }
+        ListFooterComponentStyle={{ zIndex: 10 }}
         renderItem={({ item }) => (
           <Pressable onPress={() => handlePress(item)}>
             <RepositoryItem item={item} />
