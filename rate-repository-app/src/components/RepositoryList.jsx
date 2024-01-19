@@ -21,7 +21,13 @@ const styles = StyleSheet.create({
 
 export const ItemSeparator = () => <View style={styles.separator} />
 
-export const RepositoryListContainer = ({ repositories, repoRefetch }) => {
+export const RepositoryListContainer = ({
+  repositories,
+  repoRefetch,
+  loading,
+  error,
+  networkStatus,
+}) => {
   // get the nodes from the edges array
   const repositoryNodes = repositories?.edges?.map((edge) => edge.node)
   const navigate = useNavigate()
@@ -30,6 +36,9 @@ export const RepositoryListContainer = ({ repositories, repoRefetch }) => {
     const repositoryId = item.id
     navigate(`/repository/${repositoryId}`)
   }
+
+  if (loading) return <Loading loading={loading} loadingMessage={networkStatus?.loading} />
+  if (error) return <Error error={error.message} />
 
   return (
     <View>
@@ -56,12 +65,15 @@ const RepositoryList = () => {
   // destructure the repositories data from the useRepositories function
   const { repositories, loading, error, refetch, networkStatus } = useRepositories()
 
-  if (loading) return <Loading loading={loading} loadingMessage={networkStatus?.loading} />
-  if (error) return <Error error={error.message} />
-
   return (
     <View>
-      <RepositoryListContainer repositories={repositories} repoRefetch={refetch} />
+      <RepositoryListContainer
+        repositories={repositories}
+        repoRefetch={refetch}
+        loading={loading}
+        error={error}
+        networkStatus={networkStatus}
+      />
     </View>
   )
 }
