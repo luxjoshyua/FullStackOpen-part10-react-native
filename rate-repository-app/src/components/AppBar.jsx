@@ -59,6 +59,9 @@ const AppBar = () => {
             <Link to="/review" style={styles.link}>
               <AppBarTab text="Create a review" />
             </Link>
+            <Link to="/my-reviews" style={styles.link}>
+              <AppBarTab text="My reviews" />
+            </Link>
           </View>
         ) : (
           <View style={styles.inner}>

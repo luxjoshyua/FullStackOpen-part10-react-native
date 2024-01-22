@@ -1,12 +1,5 @@
 import { View, StyleSheet, Text, Image, Pressable, FlatList } from 'react-native'
-import { useParams } from 'react-router-native'
-import { useQuery } from '@apollo/client'
 import * as Linking from 'expo-linking'
-
-import { GET_REPOSITORY, GET_REVIEW } from '../graphql/queries'
-import { ItemSeparator } from './RepositoryList'
-import ReviewItem from './ReviewItem'
-import { Loading, Error } from './Miscellaneous'
 import { shorternNumber } from '../utilities'
 import theme from '../styles/theme'
 

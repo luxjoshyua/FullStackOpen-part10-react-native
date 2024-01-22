@@ -17,19 +17,13 @@ const styles = StyleSheet.create({
 
 const RepositorySearch = ({ setSearchKeyword }) => {
   const [searchQuery, setSearchQuery] = useState('')
-  // const [searchTermDebounced] = useDebounce(searchQuery, 500)
 
-  const setSearchKeyword = () => useCallback(debounce(setSearchKeyword, 500))
-
-  // useEffect(() => {
-  //   repoRefetch({
-  //     searchKeyword: searchTermDebounced,
-  //   })
-  // }, [searchTermDebounced])
+  const setSearchKeywordDebounced = useCallback(debounce(setSearchKeyword, 1500), [])
+  // const setSearchKeywordDebouncer = useCallback(debounce(setSearchKeyword, 1000), [])
 
   const handleSearch = (query) => {
     setSearchQuery(query)
-    setSearchKeyword(query)
+    setSearchKeywordDebounced(query)
   }
 
   return (
@@ -37,7 +31,6 @@ const RepositorySearch = ({ setSearchKeyword }) => {
       <TextInput
         value={searchQuery}
         style={styles.container}
-        // onChangeText={(searchTerm) => setSearchQuery(searchTerm)}
         onChangeText={handleSearch}
         placeholder="Search repositories"
       />

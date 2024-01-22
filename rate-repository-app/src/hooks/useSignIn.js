@@ -19,7 +19,7 @@ const useSignIn = () => {
       } = data
       try {
         await authStorage.setAccessToken(accessToken)
-        console.info('User successfully logged in')
+        console.info(`User successfully logged in: ${username}, ${password}`)
         // reset the Apollo Client's store
         // this clears the Apollo Client's cache and re-executes all active queries
         apolloClient.resetStore()

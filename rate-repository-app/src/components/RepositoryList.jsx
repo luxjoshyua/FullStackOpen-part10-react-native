@@ -24,8 +24,6 @@ export const ItemSeparator = () => <View style={styles.separator} />
 export const RepositoryListContainer = ({
   repositories,
   repoRefetch,
-  loading,
-  error,
   networkStatus,
   setSearchKeyword,
 }) => {
@@ -37,9 +35,6 @@ export const RepositoryListContainer = ({
     const repositoryId = item.id
     navigate(`/repository/${repositoryId}`)
   }
-
-  if (loading) return <Loading loading={loading} loadingMessage={networkStatus?.loading} />
-  if (error) return <Error error={error.message} />
 
   return (
     <View>
@@ -63,19 +58,22 @@ export const RepositoryListContainer = ({
 }
 
 const RepositoryList = () => {
+  const [searchKeyword, setSearchKeyword] = useState('')
   // destructure the repositories data from the useRepositories function
   const { repositories, loading, error, refetch, networkStatus } = useRepositories({
     searchKeyword,
   })
-  const [searchKeyword, setSearchKeyword] = useState('')
+
+  console.log(`loading = ${loading}, error = ${error}`)
+
+  // if (loading) return <Loading loading={loading} loadingMessage={networkStatus?.loading} />
+  // if (error) return <Error error={error.message} />
 
   return (
     <View>
       <RepositoryListContainer
         repositories={repositories}
         repoRefetch={refetch}
-        loading={loading}
-        error={error}
         networkStatus={networkStatus}
         setSearchKeyword={setSearchKeyword}
       />
