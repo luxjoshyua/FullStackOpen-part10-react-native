@@ -1,4 +1,4 @@
-import { useState, useEffect, Component } from 'react'
+import { useState, useEffect } from 'react'
 import { FlatList, View, StyleSheet, Pressable } from 'react-native'
 import { useNavigate } from 'react-router-native'
 import RepositoryItem from './RepositoryItem'
@@ -27,6 +27,7 @@ export const RepositoryListContainer = ({
   loading,
   error,
   networkStatus,
+  setSearchKeyword,
 }) => {
   // get the nodes from the edges array
   const repositoryNodes = repositories?.edges?.map((edge) => edge.node)
@@ -46,7 +47,7 @@ export const RepositoryListContainer = ({
         data={repositoryNodes}
         ListHeaderComponent={
           <View>
-            <RepositorySearch repoRefetch={repoRefetch} />
+            <RepositorySearch setSearchKeyword={setSearchKeyword} />
             <RepositorySort repoRefetch={repoRefetch} />
           </View>
         }
@@ -63,7 +64,10 @@ export const RepositoryListContainer = ({
 
 const RepositoryList = () => {
   // destructure the repositories data from the useRepositories function
-  const { repositories, loading, error, refetch, networkStatus } = useRepositories()
+  const { repositories, loading, error, refetch, networkStatus } = useRepositories({
+    searchKeyword,
+  })
+  const [searchKeyword, setSearchKeyword] = useState('')
 
   return (
     <View>
@@ -73,6 +77,7 @@ const RepositoryList = () => {
         loading={loading}
         error={error}
         networkStatus={networkStatus}
+        setSearchKeyword={setSearchKeyword}
       />
     </View>
   )

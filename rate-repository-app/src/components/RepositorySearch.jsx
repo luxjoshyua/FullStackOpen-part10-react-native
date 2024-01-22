@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useCallback } from 'react'
+import { debounce } from 'lodash'
 import { View, StyleSheet, Text, TextInput } from 'react-native'
 import { useDebounce } from 'use-debounce'
 
@@ -14,9 +15,11 @@ const styles = StyleSheet.create({
   },
 })
 
-const RepositorySearch = ({ repoRefetch }) => {
+const RepositorySearch = ({ setSearchKeyword }) => {
   const [searchQuery, setSearchQuery] = useState('')
-  const [searchTermDebounced] = useDebounce(searchQuery, 500)
+  // const [searchTermDebounced] = useDebounce(searchQuery, 500)
+
+  const setSearchKeyword = () => useCallback(debounce(setSearchKeyword, 500))
 
   // useEffect(() => {
   //   repoRefetch({
@@ -24,13 +27,18 @@ const RepositorySearch = ({ repoRefetch }) => {
   //   })
   // }, [searchTermDebounced])
 
+  const handleSearch = (query) => {
+    setSearchQuery(query)
+    setSearchKeyword(query)
+  }
+
   return (
     <View style={styles.outer}>
       <TextInput
         value={searchQuery}
         style={styles.container}
         // onChangeText={(searchTerm) => setSearchQuery(searchTerm)}
-        onChangeText={(searchTerm) => setSearchQuery(searchTerm)}
+        onChangeText={handleSearch}
         placeholder="Search repositories"
       />
     </View>

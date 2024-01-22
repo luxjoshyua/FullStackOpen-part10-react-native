@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
 import { GET_REPOSITORIES } from '../graphql/queries'
 
-const useRepositories = () => {
+const useRepositories = (variables) => {
   const { data, loading, fetchMore, ...result } = useQuery(GET_REPOSITORIES, {
     // default is cache-first, meaning find result in cache first, then serve to user
     // cache and network means client will serve the cache to the user first
     // when it's available but at the same time check with server
     // for any updates to the result
     fetchPolicy: 'cache-and-network',
+    variables,
   })
 
   // const fetchRepositories = async () => {
