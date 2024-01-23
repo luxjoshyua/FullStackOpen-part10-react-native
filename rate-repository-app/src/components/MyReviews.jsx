@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { View, StyleSheet, FlatList, Text } from 'react-native'
 import { ME } from '../graphql/queries'
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
 })
 
 const MyReviews = () => {
-  const { data: reviewData } = useQuery(ME, {
+  const { data: reviewData, variables } = useQuery(ME, {
     variables: { includeReviews: true },
     // prevent getting cached
     fetchPolicy: 'cache-and-network',
@@ -27,6 +28,7 @@ const MyReviews = () => {
 
   const reviews = reviewData?.me?.reviews
   const reviewNodes = reviews?.edges.map((edge) => edge.node)
+  const includeReviews = variables?.includeReviews
 
   return (
     <View>
@@ -36,7 +38,7 @@ const MyReviews = () => {
         renderItem={({ item }) => (
           <>
             <ItemSeparator />
-            <ReviewItem review={item} style={styles.review} />
+            <ReviewItem review={item} style={styles.review} includeReviews={includeReviews} />
           </>
         )}
       />

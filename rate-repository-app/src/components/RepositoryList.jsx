@@ -64,7 +64,7 @@ const RepositoryList = () => {
     searchKeyword,
   })
 
-  console.log(`loading = ${loading}, error = ${error}`)
+  // console.log(`loading = ${loading}, error = ${error}`)
 
   // if (loading) return <Loading loading={loading} loadingMessage={networkStatus?.loading} />
   // if (error) return <Error error={error.message} />

@@ -52,16 +52,6 @@ const initialValues = {
   text: '',
 }
 
-/**
- * 
- * example 
-  "ownerName": "jaredpalmer",
-  "name": "formik"
-  
- "ownerName": "async-library",     
-  "name": "react-async"
- */
-
 // pure component, no side-effects, no hooks
 export const ReviewFormContainer = ({ onSubmit, error }) => {
   return (
@@ -123,7 +113,6 @@ const Review = () => {
         repositoryName,
         text,
       })
-      // console.log(repositoryId)
       navigate(`/repository/${repositoryId}`)
     } catch (reviewFormError) {
       // access the message from the object
