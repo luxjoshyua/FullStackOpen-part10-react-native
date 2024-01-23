@@ -1,6 +1,7 @@
 import { View, StyleSheet, Text, Pressable } from 'react-native'
 import { useNavigate } from 'react-router-native'
-import { useState, useEffect } from 'react'
+import { useMutation } from '@apollo/client'
+import { DELETE_REVIEW } from '../graphql/mutations'
 import theme from '../styles/theme'
 import { CircleWithNumber } from './Miscellaneous'
 import { formatDate } from '../utilities'
@@ -37,6 +38,11 @@ const styles = StyleSheet.create({
     fontWeight: theme.fontWeights.bold,
     paddingBottom: 5,
   },
+  subheading: {
+    fontSize: theme.fontSizes.subheading,
+    fontWeight: theme.fontWeights.semi,
+    paddingBottom: 5,
+  },
   date: {
     color: theme.colors.textSecondary,
     paddingBottom: 15,
@@ -66,25 +72,36 @@ const styles = StyleSheet.create({
   },
 })
 
-const ReviewItem = ({ review, includeReviews }) => {
+const ReviewItem = ({ review, includeReviews, refetch }) => {
   const {
+    id,
     rating,
     user: { username },
     createdAt,
     text,
+    // repository?: { name? },
     repositoryId,
   } = review
 
   const formattedDate = formatDate(createdAt)
   const navigate = useNavigate()
+  const [handleDelete] = useMutation(DELETE_REVIEW, {
+    variables: { deleteReviewId: id },
+  })
 
-  const handleViewRepository = () => {
-    // console.log(singleRepoClicked)
-    navigate(`/repository/${repositoryId}`)
-  }
+  const handleViewRepository = () => navigate(`/repository/${repositoryId}`)
 
-  const handleDeleteRepository = () => {
-    console.log(`click click delete repository`)
+  const handleDeleteReview = () => {
+    try {
+      console.log(`Deleting review with id: ${id}`)
+      handleDelete()
+      // refetch IS NOT WORKING
+      refetch({
+        includeReviews: true,
+      })
+    } catch (reviewDeletionError) {
+      console.log(`Review failed to delete: ${reviewDeletionError}`)
+    }
   }
 
   return (
@@ -94,7 +111,8 @@ const ReviewItem = ({ review, includeReviews }) => {
           <CircleWithNumber number={rating} />
         </View>
         <View style={styles.textOuter}>
-          <Text style={styles.heading}>{username}</Text>
+          <Text style={styles.heading}>Repo owner name: {username}</Text>
+          {/* <Text style={styles.subheading}>Repo name: {name}</Text> */}
           <Text style={styles.date}>{formattedDate}</Text>
           <Text>{text}</Text>
         </View>
@@ -105,22 +123,12 @@ const ReviewItem = ({ review, includeReviews }) => {
             <Text style={styles.btnText}>View repository</Text>
           </Pressable>
           <Pressable
-            onPress={handleDeleteRepository}
+            onPress={() => handleDeleteReview()}
             style={{ ...styles.viewRepositoryBtn, ...styles.deleteRepositoryBtn }}>
             <Text style={styles.btnText}>Delete review</Text>
           </Pressable>
         </View>
       )}
-      {/* <View style={styles.row}>
-        <Pressable onPress={() => handleViewRepository()} style={styles.viewRepositoryBtn}>
-          <Text style={styles.btnText}>View repository</Text>
-        </Pressable>
-        <Pressable
-          onPress={handleDeleteRepository}
-          style={{ ...styles.viewRepositoryBtn, ...styles.deleteRepositoryBtn }}>
-          <Text style={styles.btnText}>Delete review</Text>
-        </Pressable>
-      </View> */}
     </View>
   )
 }

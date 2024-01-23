@@ -36,3 +36,9 @@ export const SIGN_UP = gql`
     }
   }
 `
+
+export const DELETE_REVIEW = gql`
+  mutation Mutation($deleteReviewId: ID!) {
+    deleteReview(id: $deleteReviewId)
+  }
+`

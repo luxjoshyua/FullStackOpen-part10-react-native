@@ -83,15 +83,6 @@ export const LOGIN = gql`
   }
 `
 
-// export const ME = gql`
-//   query {
-//     me {
-//       id
-//       username
-//     }
-//   }
-// `
-
 export const ME = gql`
   query getCurrentUser($includeReviews: Boolean = false) {
     me {
@@ -104,6 +95,9 @@ export const ME = gql`
             text
             rating
             createdAt
+            repository {
+              name
+            }
             user {
               id
               username

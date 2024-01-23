@@ -20,7 +20,11 @@ const styles = StyleSheet.create({
 })
 
 const MyReviews = () => {
-  const { data: reviewData, variables } = useQuery(ME, {
+  const {
+    data: reviewData,
+    variables,
+    refetch,
+  } = useQuery(ME, {
     variables: { includeReviews: true },
     // prevent getting cached
     fetchPolicy: 'cache-and-network',
@@ -38,7 +42,12 @@ const MyReviews = () => {
         renderItem={({ item }) => (
           <>
             <ItemSeparator />
-            <ReviewItem review={item} style={styles.review} includeReviews={includeReviews} />
+            <ReviewItem
+              review={item}
+              style={styles.review}
+              includeReviews={includeReviews}
+              refetch={refetch}
+            />
           </>
         )}
       />

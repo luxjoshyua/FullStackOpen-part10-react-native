@@ -21,6 +21,7 @@ const theme = {
   }),
   fontWeights: {
     normal: '400',
+    semi: '600',
     bold: '700',
   },
   containerPadding: {
