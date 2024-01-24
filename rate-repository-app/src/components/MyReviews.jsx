@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { NetworkStatus, useQuery } from '@apollo/client'
 import { View, StyleSheet, FlatList, Text } from 'react-native'
 import { ME } from '../graphql/queries'
