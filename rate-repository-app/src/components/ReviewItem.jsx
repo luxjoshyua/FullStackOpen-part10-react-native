@@ -93,10 +93,6 @@ const ReviewItem = ({ review, includeReviews, refetch }) => {
     try {
       console.log(`Deleting review with id: ${id}`)
       await handleDelete()
-
-      // await refetch({
-      //   includeReviews: true,
-      // })
       await refetch()
     } catch (reviewDeletionError) {
       console.log(`Review failed to delete: ${reviewDeletionError}`)
