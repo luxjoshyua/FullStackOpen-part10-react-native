@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, Pressable } from 'react-native'
+import { View, StyleSheet, Text, Pressable, Alert } from 'react-native'
 import { useNavigate } from 'react-router-native'
 import { useMutation } from '@apollo/client'
 import { DELETE_REVIEW } from '../graphql/mutations'
@@ -89,20 +89,31 @@ const ReviewItem = ({ review, includeReviews, refetch }) => {
     variables: { deleteReviewId: id },
   })
 
-  const handleViewRepository = () => navigate(`/repository/${repositoryId}`)
-
-  const handleDeleteReview = () => {
+  const handleDeleteReview = async () => {
     try {
       console.log(`Deleting review with id: ${id}`)
-      handleDelete()
-      // refetch IS NOT WORKING
-      refetch({
-        includeReviews: true,
-      })
+      await handleDelete()
+
+      // await refetch({
+      //   includeReviews: true,
+      // })
+      await refetch()
     } catch (reviewDeletionError) {
       console.log(`Review failed to delete: ${reviewDeletionError}`)
     }
   }
+
+  const createTwoButtonAlert = () =>
+    Alert.alert('Delete review', 'Are you sure you want to delete this review?', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      { text: 'OK', onPress: () => handleDeleteReview() },
+    ])
+
+  const handleViewRepository = () => navigate(`/repository/${repositoryId}`)
 
   return (
     <View style={styles.outer} testID="reviewItem">
@@ -123,7 +134,10 @@ const ReviewItem = ({ review, includeReviews, refetch }) => {
             <Text style={styles.btnText}>View repository</Text>
           </Pressable>
           <Pressable
-            onPress={() => handleDeleteReview()}
+            // onPress={() => handleDeleteReview()}
+            onPress={createTwoButtonAlert}
+            title={'2-Button Alert'}
+            onPr
             style={{ ...styles.viewRepositoryBtn, ...styles.deleteRepositoryBtn }}>
             <Text style={styles.btnText}>Delete review</Text>
           </Pressable>
