@@ -79,7 +79,7 @@ const ReviewItem = ({ review, includeReviews, refetch }) => {
     user: { username },
     createdAt,
     text,
-    repository: { name },
+    // repository: { name },
     repositoryId,
   } = review
 
@@ -119,7 +119,7 @@ const ReviewItem = ({ review, includeReviews, refetch }) => {
         </View>
         <View style={styles.textOuter}>
           <Text style={styles.heading}>Repo owner name: {username}</Text>
-          <Text style={styles.subheading}>Repo name: {name}</Text>
+          {/* <Text style={styles.subheading}>Repo name: {name}</Text> */}
           <Text style={styles.date}>{formattedDate}</Text>
           <Text>{text}</Text>
         </View>

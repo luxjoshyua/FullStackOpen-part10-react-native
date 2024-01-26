@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { FlatList, View, StyleSheet, Pressable } from 'react-native'
+import { FlatList, View, StyleSheet, Pressable, Text } from 'react-native'
 import { useNavigate } from 'react-router-native'
 import RepositoryItem from './RepositoryItem'
 import useRepositories from '../hooks/useRepositories'
@@ -24,8 +24,8 @@ export const ItemSeparator = () => <View style={styles.separator} />
 export const RepositoryListContainer = ({
   repositories,
   repoRefetch,
-  networkStatus,
   setSearchKeyword,
+  onEndReach,
 }) => {
   // get the nodes from the edges array
   const repositoryNodes = repositories?.edges?.map((edge) => edge.node)
@@ -52,6 +52,8 @@ export const RepositoryListContainer = ({
             <RepositoryItem item={item} />
           </Pressable>
         )}
+        onEndReached={onEndReach}
+        onEndReachedThreshold={0.5}
       />
     </View>
   )
@@ -60,22 +62,26 @@ export const RepositoryListContainer = ({
 const RepositoryList = () => {
   const [searchKeyword, setSearchKeyword] = useState('')
   // destructure the repositories data from the useRepositories function
-  const { repositories, loading, error, refetch, networkStatus } = useRepositories({
+  const { repositories, loading, error, refetch, fetchMore } = useRepositories({
+    first: 6,
     searchKeyword,
   })
 
-  // console.log(`loading = ${loading}, error = ${error}`)
+  if (loading) return <Loading loading={loading} />
+  if (error) return <Error error={error.message} />
 
-  // if (loading) return <Loading loading={loading} loadingMessage={networkStatus?.loading} />
-  // if (error) return <Error error={error.message} />
+  const onEndReach = () => {
+    // console.log(`You have reached the end of the list...`)
+    fetchMore()
+  }
 
   return (
     <View>
       <RepositoryListContainer
         repositories={repositories}
         repoRefetch={refetch}
-        networkStatus={networkStatus}
         setSearchKeyword={setSearchKeyword}
+        onEndReach={onEndReach}
       />
     </View>
   )

@@ -1,15 +1,55 @@
 import { gql } from '@apollo/client'
 
+// export const GET_REPOSITORIES = gql`
+//   query Repositories(
+//     $orderBy: AllRepositoriesOrderBy
+//     $orderDirection: OrderDirection
+//     $searchKeyword: String
+//   ) {
+//     repositories(
+//       orderBy: $orderBy
+//       orderDirection: $orderDirection
+//       searchKeyword: $searchKeyword
+//     ) {
+//       edges {
+//         node {
+//           id
+//           fullName
+//           description
+//           forksCount
+//           reviewCount
+//           ratingAverage
+//           ownerAvatarUrl
+//           language
+//           stargazersCount
+//         }
+//         cursor
+//       }
+//       pageInfo {
+//         endCursor
+//         hasNextPage
+//         hasPreviousPage
+//         startCursor
+//       }
+//       totalCount
+//     }
+//   }
+// `
+
 export const GET_REPOSITORIES = gql`
   query Repositories(
     $orderBy: AllRepositoriesOrderBy
     $orderDirection: OrderDirection
     $searchKeyword: String
+    $after: String
+    $first: Int
   ) {
     repositories(
       orderBy: $orderBy
       orderDirection: $orderDirection
       searchKeyword: $searchKeyword
+      after: $after
+      first: $first
     ) {
       edges {
         node {
@@ -23,6 +63,7 @@ export const GET_REPOSITORIES = gql`
           language
           stargazersCount
         }
+        cursor
       }
       pageInfo {
         endCursor
@@ -57,6 +98,7 @@ export const GET_REVIEW = gql`
     repository(id: $repositoryId) {
       id
       fullName
+      name
       reviews {
         edges {
           node {
@@ -69,6 +111,35 @@ export const GET_REVIEW = gql`
               username
             }
           }
+        }
+      }
+    }
+  }
+`
+
+export const GET_REVIEWS = gql`
+  query Reviews($repositoryId: ID!, $first: Int = 5, $after: String) {
+    repository(id: $repositoryId) {
+      id
+      fullName
+      reviews(first: $first, after: $after) {
+        edges {
+          cursor
+          node {
+            id
+            text
+            rating
+            createdAt
+            user {
+              id
+              username
+            }
+          }
+        }
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
         }
       }
     }

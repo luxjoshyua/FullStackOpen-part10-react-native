@@ -29,20 +29,11 @@ const styles = StyleSheet.create({
 
 // maybe improve this by logging the actual loading status?!
 const Loading = ({ loading, loadingMessage }) => {
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <Text fontWeight="bold" fontSize="subheading" style={{ marginBottom: 5 }}>
-          {loadingMessage}
-        </Text>
-      </View>
-    )
-  }
-
   return (
     <View style={styles.container}>
       <Text fontWeight="bold" fontSize="subheading" style={{ marginBottom: 5 }}>
-        loading...
+        {/* {loadingMessage} */}
+        {loading}
       </Text>
     </View>
   )
