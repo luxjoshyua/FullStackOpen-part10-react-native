@@ -19,15 +19,6 @@ const SingleRepository = () => {
     fetchPolicy: 'cache-and-network', // prevent getting cached
   })
 
-  // const {
-  //   data: reviewData,
-  //   loading: loadingReviews,
-  //   fetchMore,
-  // } = useQuery(GET_REVIEW, {
-  //   variables: { repositoryId: id },
-  //   skip: !id, // don't fetch if id is not available
-  // })
-
   const {
     data: reviewData,
     loading: loadingReviews,
@@ -44,8 +35,8 @@ const SingleRepository = () => {
   const reviewNodes = reviews ? reviews.edges.map((edge) => edge.node) : []
 
   const handleFetchMore = () => {
-    console.log(`You have reached the end of the list...`)
-    const canFetchMore = !loadingReviews && reviewData?.repository.reviews.pageInfo.hasNextPage
+    console.log(`You have reached the end of the review list...`)
+    const canFetchMore = !loadingReviews && reviews.pageInfo.hasNextPage
 
     if (!canFetchMore) {
       return
@@ -53,13 +44,14 @@ const SingleRepository = () => {
 
     fetchMore({
       variables: {
-        after: reviewData.repository.reviews.pageInfo.endCursor,
         repositoryId: repoId,
+        first: 3,
+        after: reviews.pageInfo.endCursor,
       },
     })
   }
 
-  if (loading) return <Loading />
+  if (loading) return <Loading loading={loadingReviews} />
 
   if (error) return <Error error={error} />
 

@@ -5,11 +5,15 @@ import { gql } from '@apollo/client'
 //     $orderBy: AllRepositoriesOrderBy
 //     $orderDirection: OrderDirection
 //     $searchKeyword: String
+//     $after: String
+//     $first: Int
 //   ) {
 //     repositories(
 //       orderBy: $orderBy
 //       orderDirection: $orderDirection
 //       searchKeyword: $searchKeyword
+//       after: $after
+//       first: $first
 //     ) {
 //       edges {
 //         node {
@@ -52,33 +56,48 @@ export const GET_REPOSITORIES = gql`
       first: $first
     ) {
       edges {
+        cursor
         node {
-          id
-          fullName
           description
           forksCount
+          fullName
+          id
+          language
+          ownerAvatarUrl
+          stargazersCount
           reviewCount
           ratingAverage
-          ownerAvatarUrl
-          language
-          stargazersCount
+          url
         }
-        cursor
       }
       pageInfo {
         endCursor
         hasNextPage
-        hasPreviousPage
-        startCursor
       }
-      totalCount
     }
   }
 `
 
+// export const GET_REPOSITORY = gql`
+//   query repository($repositoryId: ID!) {
+//     repository(id: $repositoryId) {
+//       id
+//       fullName
+//       description
+//       language
+//       forksCount
+//       ratingAverage
+//       ownerAvatarUrl
+//       stargazersCount
+//       url
+//       reviewCount
+//     }
+//   }
+// `
+
 export const GET_REPOSITORY = gql`
-  query repository($repositoryId: ID!) {
-    repository(id: $repositoryId) {
+  query getRepo($id: ID!, $first: Int, $after: String) {
+    repository(id: $id) {
       id
       fullName
       description
@@ -89,6 +108,32 @@ export const GET_REPOSITORY = gql`
       stargazersCount
       url
       reviewCount
+      url
+      reviews(first: $first, after: $after) {
+        totalCount
+        edges {
+          node {
+            id
+            text
+            rating
+            createdAt
+            repositoryId
+            repository {
+              fullName
+            }
+            user {
+              id
+              username
+            }
+          }
+          cursor
+        }
+        pageInfo {
+          endCursor
+          startCursor
+          hasNextPage
+        }
+      }
     }
   }
 `
@@ -118,7 +163,7 @@ export const GET_REVIEW = gql`
 `
 
 export const GET_REVIEWS = gql`
-  query Reviews($repositoryId: ID!, $first: Int = 5, $after: String) {
+  query Reviews($repositoryId: ID!, $first: Int, $after: String) {
     repository(id: $repositoryId) {
       id
       fullName
@@ -155,24 +200,25 @@ export const LOGIN = gql`
 `
 
 export const ME = gql`
-  query getCurrentUser($includeReviews: Boolean = false) {
+  query Me($first: Int, $after: String, $includeReviews: Boolean = false) {
     me {
       id
       username
-      reviews @include(if: $includeReviews) {
+      reviews(first: $first, after: $after) @include(if: $includeReviews) {
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
         edges {
+          cursor
           node {
-            id
-            text
-            rating
-            createdAt
-            repository {
-              name
-            }
             user {
-              id
               username
             }
+            text
+            createdAt
+            rating
+            id
             repositoryId
           }
         }

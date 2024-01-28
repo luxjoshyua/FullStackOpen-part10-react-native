@@ -8,18 +8,18 @@ const useRepositories = (variables) => {
     // when it's available but at the same time check with server
     // for any updates to the result
     fetchPolicy: 'cache-and-network',
-    variables,
+    // variables,
+    variables: { first: 10 },
   })
 
   const handleFetchMore = () => {
     const canFetchMore = !loading && data?.repositories.pageInfo.hasNextPage
-
-    if (!canFetchMore) return
-
+    if (!canFetchMore) {
+      return
+    }
     fetchMore({
       variables: {
         after: data.repositories.pageInfo.endCursor,
-        ...variables,
       },
     })
   }

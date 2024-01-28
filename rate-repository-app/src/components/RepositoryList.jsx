@@ -37,25 +37,23 @@ export const RepositoryListContainer = ({
   }
 
   return (
-    <View>
-      <FlatList
-        data={repositoryNodes}
-        ListHeaderComponent={
-          <View>
-            <RepositorySearch setSearchKeyword={setSearchKeyword} />
-            <RepositorySort repoRefetch={repoRefetch} />
-          </View>
-        }
-        ListFooterComponentStyle={{ zIndex: 10 }}
-        renderItem={({ item }) => (
-          <Pressable onPress={() => handlePress(item)}>
-            <RepositoryItem item={item} />
-          </Pressable>
-        )}
-        onEndReached={onEndReach}
-        onEndReachedThreshold={0.5}
-      />
-    </View>
+    <FlatList
+      data={repositoryNodes}
+      onEndReached={onEndReach}
+      onEndReachedThreshold={0.5}
+      ListHeaderComponent={
+        <View>
+          <RepositorySearch setSearchKeyword={setSearchKeyword} />
+          <RepositorySort repoRefetch={repoRefetch} />
+        </View>
+      }
+      ListFooterComponentStyle={{ zIndex: 10 }}
+      renderItem={({ item }) => (
+        <Pressable onPress={() => handlePress(item)}>
+          <RepositoryItem item={item} />
+        </Pressable>
+      )}
+    />
   )
 }
 
@@ -63,7 +61,8 @@ const RepositoryList = () => {
   const [searchKeyword, setSearchKeyword] = useState('')
   // destructure the repositories data from the useRepositories function
   const { repositories, loading, error, refetch, fetchMore } = useRepositories({
-    first: 6,
+    fetchMore,
+    // first: 3,
     searchKeyword,
   })
 
@@ -71,19 +70,17 @@ const RepositoryList = () => {
   if (error) return <Error error={error.message} />
 
   const onEndReach = () => {
-    // console.log(`You have reached the end of the list...`)
+    console.log(`You have reached the end of the repository list...`)
     fetchMore()
   }
 
   return (
-    <View>
-      <RepositoryListContainer
-        repositories={repositories}
-        repoRefetch={refetch}
-        setSearchKeyword={setSearchKeyword}
-        onEndReach={onEndReach}
-      />
-    </View>
+    <RepositoryListContainer
+      repositories={repositories}
+      repoRefetch={refetch}
+      setSearchKeyword={setSearchKeyword}
+      onEndReach={onEndReach}
+    />
   )
 }
 

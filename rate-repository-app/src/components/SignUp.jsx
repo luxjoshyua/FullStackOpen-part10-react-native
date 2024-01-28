@@ -62,13 +62,13 @@ export const SignUpFormContainer = ({ onSubmit, error }) => {
         type="password"
         placeholder="Password"
         style={styles.input}
-        // secureTextEntry={true}
+        secureTextEntry={true}
       />
       <FormikTextInput
         name="passwordConfirm"
         placeholder="Password confirmation"
         style={styles.input}
-        // secureTextEntry={true}
+        secureTextEntry={true}
       />
       <Pressable onPress={onSubmit} style={styles.submitBtn}>
         <Text style={styles.submitBtnText}>Sign up</Text>
