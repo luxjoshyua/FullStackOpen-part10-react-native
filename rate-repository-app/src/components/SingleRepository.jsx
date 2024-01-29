@@ -3,7 +3,7 @@ import { useParams } from 'react-router-native'
 import { ItemSeparator } from './RepositoryList'
 import RepositoryItem from './RepositoryItem'
 import ReviewItem from './ReviewItem'
-import { Loading, Error } from './Miscellaneous'
+import { Loading } from './Miscellaneous'
 import useSingleRepo from '../hooks/useSingleRepo'
 
 /**
@@ -20,8 +20,6 @@ const SingleRepository = () => {
   const reviewNodes = repository ? repository.reviews.edges.map((edge) => edge.node) : []
 
   if (loading) return <Loading />
-
-  // if (error) return <Error error={error} />
 
   return (
     <FlatList

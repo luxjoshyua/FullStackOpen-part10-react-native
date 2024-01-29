@@ -103,7 +103,6 @@ const ReviewItem = ({ review, includeReviews, refetch }) => {
     Alert.alert('Delete review', 'Are you sure you want to delete this review?', [
       {
         text: 'Cancel',
-        // onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
       { text: 'OK', onPress: () => handleDeleteReview() },
@@ -119,7 +118,6 @@ const ReviewItem = ({ review, includeReviews, refetch }) => {
         </View>
         <View style={styles.textOuter}>
           <Text style={styles.heading}>Repo owner name: {username}</Text>
-          {/* <Text style={styles.subheading}>Repo name: {name}</Text> */}
           <Text style={styles.date}>{formattedDate}</Text>
           <Text>{text}</Text>
         </View>
