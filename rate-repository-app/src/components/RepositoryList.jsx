@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { FlatList, View, StyleSheet, Pressable, Text } from 'react-native'
+import { useState } from 'react'
+import { FlatList, View, StyleSheet, Pressable } from 'react-native'
 import { useNavigate } from 'react-router-native'
 import RepositoryItem from './RepositoryItem'
 import useRepositories from '../hooks/useRepositories'
