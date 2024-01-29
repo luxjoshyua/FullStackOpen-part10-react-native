@@ -1,79 +1,37 @@
 import { gql } from '@apollo/client'
-
-// export const GET_REPOSITORIES = gql`
-//   query Repositories(
-//     $orderBy: AllRepositoriesOrderBy
-//     $orderDirection: OrderDirection
-//     $searchKeyword: String
-//     $after: String
-//     $first: Int
-//   ) {
-//     repositories(
-//       orderBy: $orderBy
-//       orderDirection: $orderDirection
-//       searchKeyword: $searchKeyword
-//       after: $after
-//       first: $first
-//     ) {
-//       edges {
-//         node {
-//           id
-//           fullName
-//           description
-//           forksCount
-//           reviewCount
-//           ratingAverage
-//           ownerAvatarUrl
-//           language
-//           stargazersCount
-//         }
-//         cursor
-//       }
-//       pageInfo {
-//         endCursor
-//         hasNextPage
-//         hasPreviousPage
-//         startCursor
-//       }
-//       totalCount
-//     }
-//   }
-// `
+import { REPOSITORIES_DETAILS, REVIEWS_DETAILS } from './fragments'
 
 export const GET_REPOSITORIES = gql`
   query Repositories(
     $orderBy: AllRepositoriesOrderBy
     $orderDirection: OrderDirection
     $searchKeyword: String
-    $after: String
-    $first: Int
   ) {
     repositories(
       orderBy: $orderBy
       orderDirection: $orderDirection
       searchKeyword: $searchKeyword
-      after: $after
-      first: $first
     ) {
       edges {
-        cursor
         node {
+          id
+          fullName
           description
           forksCount
-          fullName
-          id
-          language
-          ownerAvatarUrl
-          stargazersCount
           reviewCount
           ratingAverage
-          url
+          ownerAvatarUrl
+          language
+          stargazersCount
         }
       }
       pageInfo {
         endCursor
         hasNextPage
+        hasPreviousPage
+        startCursor
       }
+      totalCount
     }
   }
 `
@@ -98,33 +56,13 @@ export const GET_REPOSITORIES = gql`
 export const GET_REPOSITORY = gql`
   query getRepo($id: ID!, $first: Int, $after: String) {
     repository(id: $id) {
-      id
-      fullName
-      description
-      language
-      forksCount
-      ratingAverage
-      ownerAvatarUrl
-      stargazersCount
-      url
-      reviewCount
+      ...RepositoriesDetails
       url
       reviews(first: $first, after: $after) {
         totalCount
         edges {
           node {
-            id
-            text
-            rating
-            createdAt
-            repositoryId
-            repository {
-              fullName
-            }
-            user {
-              id
-              username
-            }
+            ...ReviewDetails
           }
           cursor
         }
@@ -136,6 +74,8 @@ export const GET_REPOSITORY = gql`
       }
     }
   }
+  ${REPOSITORIES_DETAILS}
+  ${REVIEWS_DETAILS}
 `
 
 export const GET_REVIEW = gql`
@@ -143,7 +83,6 @@ export const GET_REVIEW = gql`
     repository(id: $repositoryId) {
       id
       fullName
-      name
       reviews {
         edges {
           node {
@@ -162,35 +101,6 @@ export const GET_REVIEW = gql`
   }
 `
 
-export const GET_REVIEWS = gql`
-  query Reviews($repositoryId: ID!, $first: Int, $after: String) {
-    repository(id: $repositoryId) {
-      id
-      fullName
-      reviews(first: $first, after: $after) {
-        edges {
-          cursor
-          node {
-            id
-            text
-            rating
-            createdAt
-            user {
-              id
-              username
-            }
-          }
-        }
-        pageInfo {
-          startCursor
-          endCursor
-          hasNextPage
-        }
-      }
-    }
-  }
-`
-
 export const LOGIN = gql`
   mutation login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
@@ -200,25 +110,24 @@ export const LOGIN = gql`
 `
 
 export const ME = gql`
-  query Me($first: Int, $after: String, $includeReviews: Boolean = false) {
+  query getCurrentUser($includeReviews: Boolean = false) {
     me {
       id
       username
-      reviews(first: $first, after: $after) @include(if: $includeReviews) {
-        pageInfo {
-          endCursor
-          hasNextPage
-        }
+      reviews @include(if: $includeReviews) {
         edges {
-          cursor
           node {
+            id
+            text
+            rating
+            createdAt
+            repository {
+              name
+            }
             user {
+              id
               username
             }
-            text
-            createdAt
-            rating
-            id
             repositoryId
           }
         }

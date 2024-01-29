@@ -61,8 +61,7 @@ const RepositoryList = () => {
   const [searchKeyword, setSearchKeyword] = useState('')
   // destructure the repositories data from the useRepositories function
   const { repositories, loading, error, refetch, fetchMore } = useRepositories({
-    fetchMore,
-    // first: 3,
+    first: 8,
     searchKeyword,
   })
 
@@ -70,7 +69,6 @@ const RepositoryList = () => {
   if (error) return <Error error={error.message} />
 
   const onEndReach = () => {
-    console.log(`You have reached the end of the repository list...`)
     fetchMore()
   }
 
