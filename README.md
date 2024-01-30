@@ -22,4 +22,5 @@ npm start
 
 Once dependencies are installed, follow the commands in the terminal to get the app running.
 
-[Course certificate](./img/certificate-reactnative.png)
+Course completion certificate
+<img src="./img/certificate-reactnative.png" alt="Part 10 React Native Course Certificate" width="100%" />
