@@ -21,3 +21,5 @@ npm start
 ```
 
 Once dependencies are installed, follow the commands in the terminal to get the app running.
+
+[Course certificate](./img/certificate-reactnative.png)
